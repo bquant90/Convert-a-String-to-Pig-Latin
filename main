@@ -1,0 +1,77 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+
+bool isVowel(char c) {
+  c = tolower(c); // Convert the chararacter to lowercase; simplifies cases
+  switch(c) {
+    case 'a':
+      return true;
+      break;
+    case 'e':
+      return true;
+      break;
+    case 'i':
+      return true;
+      break;
+    case 'o':
+      return true;
+      break;
+    case 'u':
+      return true;
+      break;
+    case 'y':
+      return true;
+      break;
+    default:
+      return false;
+      break;
+  }
+}
+
+const char* pigLatin(char word[]) {
+  // Example of Pig Latin Conversion: bryan -> yanbray. quant -> uantqay
+  int length = strlen(word); // Get the length of the word
+  int index = -1;
+  char ending[] = "ay";
+  static char newWord[20] = "";
+  for (int i = 0; i < length; i++) {
+    // For special cases with words that start with 'y'
+    if(word[0] == 'y' || word[0] == 'Y') {
+      index = i + 1;
+      break;
+    }
+    else if (isVowel(word[i])) {
+      index = i; // Move the index to the index of the first vowel.
+      break;
+    }
+  }
+  
+  // If there is no vowel present, append "ay" to the end of the word and return
+  // printf("%d", index); // print index
+  if (index == -1) {
+    strncpy(newWord, word, sizeof(newWord)); // Copy the word into newWord
+    strncat(newWord, ending, 2); // Copy "ay" to newWord
+    return newWord;
+  }
+  // Otherwise, add all the words after the index, concatenate the newWord string with words BEFORE the index, then add "ay" to the end.
+  else {
+    strncpy(newWord, &word[index], sizeof(newWord));
+    strncat(newWord, &word[0], index);
+    strncat(newWord, ending, 2);
+    return newWord;
+  }
+}
+
+int main(void) {
+  char word[] = "bryan";
+  const char* pig_word = pigLatin(word);
+  char userWord[] = "";
+  printf("%s in pig latin is %s.\n", word, pig_word);
+  printf("Enter a word to be converted to pig latin: ");
+  scanf("%s", userWord);
+  const char* new_userWord = pigLatin(userWord);
+  printf("%s in pig latin is %s.\n", userWord, new_userWord);
+  return 0;
+}
